@@ -1,23 +1,16 @@
-\documentclass[a4paper]{report}
+\documentclass{szablonPG}
 \usepackage{polski}
-\usepackage{graphicx}
-\usepackage{subfiles} % Subfiles najlepiej zeby bylo ladowane na koncu
-
-\graphicspath{{\subfix{./img/}}}
 
 \begin{document}
-\title{Skalowalna architektura dla Systemu Testowania i Oceny Studentow (STOS)}
-\author{Adam Niesiebecki, Lukasz Nowakowski, Tymoteusz Palinski}
-\date{November 2024}
-\maketitle
+% docelowo - pdf wygenerowany z mojapg jako strony tytulowe
 
-\begin{abstract}
-	Podsumowanie pieknej pracy inzynierskiel
-\end{abstract}
+% Streszczenia + spis tresci
+\input{meta/streszczenie.tex}
+\input{meta/abstract.tex}
 \tableofcontents
-\chapter{Opis architektury}
-\subfile{chapters/chapter1.tex}
-\chapter{Inny rozdzial}
-\subfile{chapters/chapter2.tex}
+
+% Tresc pracy
+\input{chapters/chapter1.tex}
+\input{chapters/chapter2.tex}
 
 \end{document}

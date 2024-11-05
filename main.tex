@@ -1,16 +1,19 @@
+% LTex: language=pl
 \documentclass{szablonPG}
-\usepackage{polski}
-
+\usepackage[style=numeric, language=polish, backend=bibtex]{biblatex}
+\DeclareDelimFormat{finalnamedelim}{\addspace i\space}
+% Żródła bibliografii
+\addbibresource{bibliography/bibliography.bib}
 \begin{document}
-% docelowo - pdf wygenerowany z mojapg jako strony tytulowe
-
-% Streszczenia + spis tresci
+% Rzeczy typu nagłówek, etc.
 \input{meta/streszczenie.tex}
 \input{meta/abstract.tex}
 \tableofcontents
-
-% Tresc pracy
-\input{chapters/chapter1.tex}
-\input{chapters/chapter2.tex}
-
+% Rozdziały
+\input{chapters/1-wstep.tex}
+\input{chapters/2-system.tex}
+\input{chapters/3-implementacja.tex}
+\input{chapters/4-wdrozenie.tex}
+% Bibliografia
+\printbibliography
 \end{document}

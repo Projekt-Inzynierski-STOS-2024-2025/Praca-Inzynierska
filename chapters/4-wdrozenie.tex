@@ -1,0 +1,12 @@
+% LTex: language=pl
+\chapter{Wdrożenie}
+\section{Serwer fizyczny}
+Opis serwera fizycznego
+\section{Koncepcja wdrożenia-klaster Kubernetes}
+Aby efektywnie wykorzystać wcześniej wspomniane mechanizmy ograniczania wykorzystywanych zasobów sprzętowych, pierwsza koncepcja architektury wdrożenia systemu była oparta na orkiestratorze kontenerów Kubernetes, systemie pozwalającym na zautomatyzowane wdrażanie, skalowanie i zarządzanie potencjalnie wysoką liczbą kontenerów.
+
+Główną zaletą takiego podejścia, w słowach inżynierów firmy Google \cite{googleKubernetes}, jest przeniesienie wielu odpowiedzialności ze środowiska, w którym działa aplikacja, na samą aplikację. Pozwala to na uniezależnienie obecnych i przyszłych komponentów systemu STOS od środowiska, w którym zostały wdrożone, co znacząco ułatwia prowadzącym lub studentom rozwijającym i utrzymującym system STOS na dodawanie, lub modyfikowanie jego funkcjonalności. Ponadto Kubernetes zawiera wbudowane funkcjonalności monitorowania zużycia zasobów systemowych i umożliwia konfigurację automatycznego ponownego uruchamiania aplikacji po wystąpieniu błędu.
+
+W ramach projektu inżynierskiego powstał prototyp takiego klastra, zawierający symulowaną architekturę systemu STOS (rysunek niżej). Umożliwiał on dynamiczne skalowanie ilości instancji serwisu "worker", odpowiedzialnego za ewaluację zadań przesyłanych przez studentów, jak i monitorowanie stanu wszystkich działających w ramach systemu usług.
+
+

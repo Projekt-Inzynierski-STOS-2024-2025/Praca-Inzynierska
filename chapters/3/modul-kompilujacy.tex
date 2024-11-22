@@ -72,6 +72,16 @@ Emulator to oprogramowanie tworzące wirtualną maszynę innej platformy. Urucha
 \subsubsection{Wine\cite{wine}}
 Wine to warstwa kompatybilności aplikacji przeznaczonych do wykonywania na systemie Windows na systemach zgodnych ze standardami POSIX, takich jak Linux, macOS. Jest oprogramowaniem open source, który jest wciąż aktywnie wspierany przez społeczność oraz firmę CodeWeavers, a jego pierwsza wersja został wydana w 1993 roku. Ze względu na to, że ponad 70\% komputerów osobistych korzysta z systemów operacyjnych Windows\cite{windowsMarketShare}, programy użytkowe takie jak aplikacje biznesowe, narzędzia biurowe czy gry komputerowe często tworzone są tylko na tę platformę, co może ograniczać użytkownikom możliwość wyboru używanego systemu, prowadzić do monopolu i wymuszać zakup licencji Windows. Wine oraz inne programy realizujące podobną funkcjonalność, pozwalają na wybór preferowanego systemu, bez rezygnowania z dostępu do puli programów nieoferujących wsparcia dla niego.
 
+\begin{figure}[!h]
+	\begin{center}
+		\resizebox{1\textwidth}{!} {
+			\includegraphics{img/3/desktop-os-market-share.png}
+		}
+		\caption{Wykres przedstawiający udział systemów operacyjnych wśród komputerów osobistych. Źródło: https://gs.statcounter.com/os-market-share/desktop/worldwide/.}
+		\label{diagram-aktywnosci-worker}
+	\end{center}
+\end{figure}
+
 
 Wine podczas pracy korzysta z folderu zawierającego wirtualne środowisko - Wineprefix\cite{wineprefix}, gdzie znajdują się pliki symulujące system Windows. Są tam pliki rejestrów, biblioteki, pliki konfiguracyjne oraz struktura folderów odpowiadająca podziałowi na partycje systemowe systemu Windows, które tworzone jest domyślne przy instalacji programu. Użytkownik może utworzyć więcej środowisk, z dostosowanymi ustawieniami architektury, narzędzi, bibliotek dll czy wersji systemu, oraz zmieniać wykorzystywane obecnie środowisko. Konfiguracja środowiska odbywa się przy pomocy narzędzia Winetricks\cite{winetricks}. Izoluje to działanie programu od wirtualnego środowiska i umożliwia konfigurację go do własnych potrzeb. Aby uruchomić program przy pomocy Wine, należy uruchomić go za pomocą komendy:
 \begin{verbatim}

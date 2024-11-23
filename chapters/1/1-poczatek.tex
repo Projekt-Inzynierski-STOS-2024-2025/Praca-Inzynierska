@@ -5,13 +5,13 @@
 \section{Komponenty i schemat działania}
 System możemy podzielić na komponenty ze względu na realizowane zadania:
 \begin{itemize}
-    \item STOS - serwis w postaci strony internetowej, umożliwiający wgranie rozwiązań przez studentów i umieszczenie ich w kolejce dostępnej do pobrania przez inne serwisy poprzez żądania HTTP.
-    \item Moduł sprawdzający - część serwisu działającego po stronie serwera. Jego zadaniem, jest wywoływanie zapytań do API STOS-u metodą odpytywania, w celu pobierania kodu programów do wykonania, zlecenie kompilacji i oceny kodu oraz przesłanie wyniku do STOS-u.
-    \item Moduł kompilujący - skonteneryzowany serwis działający na serwerze, kompilujący otrzymany kod. Ma możliwość kompilacji lub interpretacji wielu języków programowania. Aktywnie nasłuchuje komunikatów przesyłanych przez nazwany potok. Jest przystosowany do ciągłego działania, co wymaga uruchomienia go wyłącznie przy starcie całej platformy. Posiada współdzielone katalogi z gospodarzem, zawierające skrypty kontrolujące, kody źródłowe oraz rezultaty.
+    \item STOS -- serwis w postaci strony internetowej, umożliwiający wgranie rozwiązań przez studentów i umieszczenie ich w kolejce dostępnej do pobrania przez inne serwisy poprzez żądania HTTP.
+    \item Moduł sprawdzający -- część serwisu działającego po stronie serwera. Jego zadaniem, jest wywoływanie zapytań do API STOS-u metodą odpytywania, w celu pobierania kodu programów do wykonania, zlecenie kompilacji, ocenę kodu oraz przesłanie wyniku do STOS-u.
+    \item Moduł kompilujący -- skonteneryzowany serwis działający na serwerze, kompilujący otrzymany kod. Ma możliwość kompilacji lub interpretacji wielu języków programowania. Aktywnie nasłuchuje komunikatów przesyłanych przez nazwany potok. Jest przystosowany do ciągłego działania, co wymaga uruchomienia go wyłącznie przy starcie całej platformy. Posiada współdzielone katalogi z gospodarzem, zawierające skrypty kontrolujące, kody źródłowe oraz rezultaty.
 \end{itemize}
 \begin{figure}
 	\begin{center}
-		\resizebox{0.7\textwidth}{!} {
+		\resizebox{1.0\textwidth}{!} {
 			\includegraphics{img/1/d_sek_1.png}
 		}
 		\caption[Diagram sekwencji komponentów]{Diagram przedstawiający sekwencję wykonywanych zdarzeń w systemie, podczas oceny zadania. Źródło własne.}

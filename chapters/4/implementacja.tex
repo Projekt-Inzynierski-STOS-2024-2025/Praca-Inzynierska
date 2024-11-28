@@ -1,0 +1,111 @@
+% LTex: language=pl
+
+\section{Automatyzacja wdrożenia}
+W celu uproszczenia i automatyzacji procesu wdrożenia i dostarczania aktualizacji systemu STOS, zaimplementowany został skrypt odpowiedzialny za monitorowanie stanu środowiska, przeprowadzanie testów aplikacji i uruchamianie serwisu. W ramach tego programu uwzględniono:
+\begin{itemize}
+	\item sprawdzanie obecności wymaganych zależności w postaci pakietów i aplikacji,
+	\item przeprowadzanie testów aplikacji w środowisku testowym,
+	\item kontrolowane zamknięcie aktualnie działającej aplikacji STOS,
+	\item dynamiczne generowanie skryptu zawierającego wszystkie usługi składające się na STOS,
+	\item uruchomienie aplikacji STOS w ramach systemd.
+\end{itemize}
+\subsection{Przygotowanie środowiska}
+Przygotowanie środowiska odbywa się w dwóch etapach -- weryfikacji obecności programów wykonywalnych i resecie środowiska zmodyfikowanego przez istniejący system STOS do stanu wyjściowego. 
+\newline \noindent Programy wykonywalne wymagane do poprawnego działania aplikacji to wcześniej wspomniany menadżer pakietów nix i silnik konteneryzacji docker. Skrypt sprawdza, czy uruchomienie tych programów zwraca kod wyjścia programu różny od kodu 0 -- w takim przypadku, skrypt informuje użytkownika o błędzie i jego dalsze wykonywanie jest przerywane, ponieważ wywołanie skryptu bez obecności wymaganych aplikacji mogłoby prowadzić do niezdefiniowanego zachowania. W ramach tej procedury sprawdzana jest również konfiguracja połączenia maszyny z siecią i serwerem DNS za pomocą polecenia ping.
+\lstset{style=shell}
+\begin{lstlisting}[caption = {Przykład weryfikacji obecności instalacji programu "docker" w systemie.}]
+#!/bin/bash
+echo ------ Checking for docker installation 
+if ! command -v docker &> /dev/null; then
+    echo "[error] docker not present in path"
+    exit 1
+fi
+echo ------ Healthcheck was successful 
+\end{lstlisting}
+\noindent Kolejną częścią procesu przygotowania środowiska są operacje związane z dostosowywaniem środowiska do uruchomienia nowej wersji aplikacji STOS. Pierwszym krokiem jest aktualizacja repozytorium pakietów nixpkgs. Następnie usuwane są katalog \textit{/tmp/env-vars}, który jest artefaktem uruchomienia programu nix-shell i zatrzymywane są wszystkie kontenery docker składające się na moduły kompilujące aplikacji. Ostatnim krokiem jest zatrzymanie działającego serwisu STOS korzystając z narzędzia \textit{systemctl}.
+\subsection{Testy jednostkowe}
+Następnym zadaniem realizowanym przez skrypt jest przeprowadzanie zautomatyzowanych testów jednostkowych i integracyjnych aplikacji. Wykorzystywany jest w tym celu pakiet \textit{pytest} w połączeniu z dedykowanym środowiskiem testowym zdefiniowanym w konfiguracji środowiska nix \textit{(plik shell.testing.nix)}. Posiada ono biblioteki niezbędne do wykonania testów, które nie są obecne w środowisku produkcyjnym. W przypadku zakończenia niepowodzeniem któregokolwiek ze zdefiniowanych testów skrypt przerywa dalsze wykonanie, informując użytkownika o błędach w testach.
+\lstset{style=shell}
+\begin{lstlisting}[caption = {Wywołanie skryptu pozwalającego na automatyczne testowanie aplikacji w ramach środowiska zdefiniowanego w pliku \textit{shell.testing.sh}}]
+#!/bin/bash
+echo --- Running testing.sh 
+nix-shell shell.testing.nix --run "./test.sh"
+if [ $? -ne 0 ]; then
+    echo --- ERROR - testing.sh exited with a non-zero exit code, aborting
+    exit 1
+fi
+echo --- Checks successful, preparing for deployment
+\end{lstlisting}
+\subsection{Generowanie skryptu}
+Główną funkcjonalnością automatycznego wdrożenia jest dynamiczne generowanie skryptu wywołującego wszystkie komponenty składające się na aplikację STOS. Są to:
+\begin{itemize}
+	\item aplikacja napisana w języku python, wywoływana poprzez uruchomienie pliku \textit{main.py},
+	\item program filebeat, odpowiedzialny za przesyłanie logów do maszyny wirtualnej zajmującej się ich gromadzeniem.
+\end{itemize}
+Skrypt ten jest generowany dynamicznie w celu ustalenia ścieżek bezwzględnych, w których znajdują się pliki aplikacji -- tym sposobem, wdrożenie aplikacji nie jest uzależnione od struktury katalogów na docelowym systemie, wyłącznie od struktury plików obecnych w repozytorium. Dodatkowo umieszczenie wywołań poleceń w jednym skrypcie umożliwia ich synchronizację i umożliwia monitorowanie wszystkich tworzonych w nim procesów w ramach systemd. Ostatnią funkcjonalnością, za którą odpowiedzialny jest dynamicznie generowany skrypt jest przekierowywanie deskryptora procesu stdout dla aplikacji w języku python do pliku \textit{stos.log} mieszczącym się w katalogu domowym użytkownika \textit{stos}. Jest to praktyka zgodna z zaleceniami 12 Factor App, które przewidują sczytywanie strumienia logów systemu bezpośrednio ze strumienia stdout programu \cite{12fa}.
+\lstset{style=shell}
+\begin{lstlisting}[caption = {Dynamiczne generowanie skryptu uruchamiającego aplikację STOS, uwzględniającego ścieżki bezwzlędne, w których znajdują się pliki źródłowe aplikacji}]
+#!/bin/bash
+current_dir=$(dirname "$(realpath "$0")")
+cd $current_dir
+root_dir=$(dirname "$current_dir")
+sudo touch /usr/bin/stos-bootstrap
+sudo tee /usr/bin/stos-bootstrap > /dev/null << EOF
+#!/bin/bash
+cd $root_dir
+$ns $current_dir/shell.nix --run 'filebeat -c ./deployment/filebeat.yml' &
+$ns $current_dir/shell.nix --run 'python3 main.py' >> /home/stos/stos.log &
+wait
+EOF
+sudo chmod +x /usr/bin/stos-bootstrap
+\end{lstlisting}
+Skrypt ten zapisywany jest w katalogu \textit{/usr/bin} jako \textit{stos-bootstrap}. Do takiego właśnie programu odwołuje się plik \textit{stos.service}, który stanowi definicję aplikacji STOS w kontekście systemd, jako programu stanowiącego punkt wejściowy \textit{(entrypoint)} aplikacji.
+\begin{lstlisting}[caption = {Definicja aplikacji STOS jako serwisu w kontekście systemd}]
+[Unit]
+Description=STOS daemon managing code execution container instances
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+User=stos
+ExecStart=/usr/bin/stos-bootstrap
+\end{lstlisting}
+\subsection{Wykorzystanie środowisk nix-shell}
+W celu separacji konfiguracji przeznaczonej do testowania i rozwoju aplikacji i konfiguracji produkcyjnej, w których uruchomiona jest aplikacja napisana w języku python, zdefiniowano dwie różne konfiguracje nix. Obie z nich korzystają z pakietu \textit{python312} (interpreter python w wersji 3.12) i biblioteki przeznaczonej dla pythona w tej wersji -- \textit{python-dotenv}, pozwalającej na odczytywanie zmiennych środowiskowych zdefiniowanych w pliku \textit{.env}. Ponadto instalowany jest pakiet \textit{sqlite}, wykorzystywany przy implementacji systemu cache.
+\newline \noindent W konfiguracji środowiska testowego instalowane są dodatkowe biblioteki niezbędne przy przeprowadzaniu testów dla interpretera python w wersji 3.12 -- \textit{pytest} i \textit{pytest-cov}. Z kolei w środowisku produkcyjnym dodane zostały biblioteka \textit{requests} i pakiet \textit{filebeat}.
+\begin{lstlisting}[caption = {Porównanie środowisk nix dla środowiska testowego i środowiska produkcyjnego}]
+# Dev environment
+let
+  nixpkgs = fetchTarball "https://github.com/NixOS/nixpkgs/tarball/nixos-24.05";
+  pkgs = import nixpkgs { config = {}; overlays = []; };
+in
+
+pkgs.mkShellNoCC {
+  packages = [
+    (pkgs.python312.withPackages (python-pkgs: [
+      python-pkgs.pytest
+      python-pkgs.python-dotenv
+      python-pkgs.pytest-cov
+    ]))
+    pkgs.sqlite
+  ];
+}
+
+# Production environment
+let
+  nixpkgs = fetchTarball "https://github.com/NixOS/nixpkgs/tarball/nixos-24.05";
+  pkgs = import nixpkgs { config = {}; overlays = []; };
+in
+
+pkgs.mkShellNoCC {
+  packages = [
+    (pkgs.python312.withPackages (python-pkgs: [
+      python-pkgs.python-dotenv
+      python-pkgs.requests
+    ]))
+    pkgs.sqlite
+    pkgs.filebeat
+  ];
+}
+\end{lstlisting}

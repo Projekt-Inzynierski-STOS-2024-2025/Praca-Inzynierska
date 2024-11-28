@@ -1,5 +1,5 @@
 \section{Moduł kompilujący}
-W czasie prac nad projektem nie była dostępna istniejąca część systemu modułu kompilującego, odpowiedzialnego za kompilację kodu, egzekucję programu oraz przeprowadzanie testów. Znane były funkcjonalności oraz wymagania, które musiał spełniać ten moduł, co pozwoliło na implementację własnego modułu. Rozwiązanie w obecnym stanie było używane jedynie do testów, jednak jest otwarte na modyfikację i dalszy rozwój w przyszłości. W tym rozdziale zostanie opisany zaimplementowany przez nas moduł, a nie zintegrowany w ostatecznym rozwiązaniu kontener pochodzący z obecnego systemu STOS. Na etapie projektowania i implementacji nie był znany dokładny interfejs obrazu istniejącego kontenera, przez co nie jest on z nim kompatybilny. 
+W czasie prac nad projektem nie była dostępna istniejąca część systemu modułu kompilującego, odpowiedzialnego za kompilację kodu, wykonanie programu oraz przeprowadzanie testów. Znane były funkcjonalności oraz wymagania, które musiał spełniać ten moduł, co pozwoliło na implementację własnego modułu. Rozwiązanie w obecnym stanie było używane jedynie do testów, jednak jest otwarte na modyfikację i dalszy rozwój w przyszłości. W tym rozdziale zostanie opisany zaimplementowany przez nas moduł, a nie zintegrowany w ostatecznym rozwiązaniu kontener pochodzący z obecnego systemu STOS. Na etapie projektowania i implementacji nie był znany dokładny interfejs obrazu istniejącego kontenera, przez co nie jest on z nim kompatybilny. 
 
 \subsection{Wymagania}
 Otrzymane wymagania do modułu kompilującego obejmowały wykorzystane technologie oraz sposób działania. Moduł musiał być skonteneryzowany, zapewniając izolację wykonywanego kodu zadania od systemu operacyjnego i procesów systemu macierzystego. Ze względu na dostępność wiedzy, łatwość implementacji oraz utrzymywania systemu, oprogramowaniem służącym do konteneryzacji miał być Docker. Został również określony wymóg, aby czas wykonania zadania był niezależny od obciążenia i dostępnej mocy obliczeniowej systemu macierzystego. Dodatkowo system miał zapewniać wykonywanie programu zadania tak, jakby był wykonywany na maszynie z systemem operacyjnym Windows. Ważnym aspektem był również niski koszt związany z potencjalną awarią i ponownym przywróceniem działania tej części systemu.
@@ -29,7 +29,7 @@ W katalogu /source znajdują się pliki zawierające kod źródłowy c++. Wejśc
 
 \subsection{Skrypt uruchamiany przy starcie kontenera}
 Punkt wejścia to skrypt wskazany w pliku Dockerfile, który uruchamia się po starcie kontenera. Został napisany w Bashu i realizuje funkcjonalność modułu kompilującego, kompiluje pliki *.cpp znajdujące się w katalogu /source powiązanego folderu za pomocą mingw, a następnie uruchamia skompilowany program dla każdego z plików wejścia *.in umieszczonych w folderze /in. Wynik każdego uruchomienia przekierowywany jest do  pliku wynikowego *.out w folderze /out katalogu współdzielonego. Każde uruchomienie dodatkowo mierzy czas wykonania przy pomocy komendy date.
-\begin{figure}[!h]
+\begin{figure}[!ht]
 	\begin{center}
 		\resizebox{1\textwidth}{!} {
 			\includegraphics{img/3/diagram-aktywnosci-modul-kompilujacy.png}

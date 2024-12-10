@@ -1,11 +1,11 @@
 \section{Proces uruchamiania}
-Przed uruchomieniem systemu, należy zwrócić uwagę na konfigurację użytkowników oraz struktury katalogowej. Pliki uruchamianego systemu muszą być umieszczone w katalogu \textit{\/home\/stos}, ze względu na niemodyfikowalne bez zmiany skryptów ustawienie ścieżek. Należy upewnić się, czy istnieją wszyscy użytkownicy, którzy są wymienieni w skryptach, czyli „ja” oraz „stos”, oraz pozostałe skrypty i pliki wykonywalne, używane w trakcie działania modułów.
+Przed uruchomieniem systemu, należy zwrócić uwagę na konfigurację użytkowników oraz struktury katalogowej. Pliki uruchamianego systemu muszą być umieszczone w~katalogu \textit{/home/stos}, ze względu na niemodyfikowalne bez zmiany skryptów ustawienie ścieżek. Należy upewnić się, czy istnieją wszyscy użytkownicy, którzy są wymienieni w~skryptach, czyli „ja” oraz „stos”, oraz pozostałe skrypty i~pliki wykonywalne, używane w~trakcie działania modułów.
 \newline \indent Uruchamianie platformy na docelowym serwerze odbywa się poprzez użycie dwóch skryptów:
 \begin{itemize}
     \item start.sh -- uruchamianie kontenera kompilującego zadania.
-    \item startup.sh -- uruchamianie serwisu pobierającego, przekazującego i sprawdzającego zadania przesłane przez studentów.
+    \item startup.sh -- uruchamianie serwisu pobierającego, przekazującego i~sprawdzającego zadania przesłane przez studentów.
 \end{itemize}
-Skrypt startup.sh pobiera adres VPN z interfejsu sieciowego tap1. 
+Skrypt startup.sh pobiera adres VPN z interfejsu sieciowego \textit{tap1}. 
 
 \section{Uproszczona struktura katalogowa}
 \dirtree{%
@@ -43,4 +43,4 @@ Skrypt startup.sh pobiera adres VPN z interfejsu sieciowego tap1.
 .4 input.
 .4 output.
 }
-W zaprezentowanej strukturze katalogowej, ze względu na powtarzalność i identyczność działania, nie zostały uwzględnione pliki kompilujące inne języki niż C lub C++. Pliki z folderu „io”, służą do komunikacji z modułem kompilującym, a skrypty z katalogu „control”, są używane do jego sterowania. Część z plików jest w postaci binarnej, przystosowanych do uruchomienia w systemie Linux albo Windows.
+W zaprezentowanej strukturze katalogowej, ze względu na powtarzalność i~identyczność działania, nie zostały uwzględnione pliki kompilujące inne języki niż C lub C++. Pliki z folderu \textit{io}, służą do komunikacji z modułem kompilującym, a~skrypty z katalogu \textit{control}, są używane do jego sterowania. Część z plików jest w~postaci binarnej, przystosowanych do uruchomienia w~systemie Linux albo Windows.

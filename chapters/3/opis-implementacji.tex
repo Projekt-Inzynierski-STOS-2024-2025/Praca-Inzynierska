@@ -4,5 +4,20 @@ Zaimplementowany system został podzielony na dwa podsystemy, jeden z nich -- za
 \subsection{Założenia stylistyczne implementowangeo kodu}
 System został zaimplementowany w~języku Python. W~celu poprawy jakości, utrzymywalności, spójności i czytelności kodu oraz ułatwienia wykrywania błędów wszystkie metody oraz zmienne zostały oznaczone typami, a~klasy zostały utworzone na podstawie interfejsów zdefiniowanych przy użyciu modułu Abstract Base Classes(abc) \cite{pythonAbc}, pozwalającego na definiowanie klas abstrakcyjnych. Podczas implementacji zostało wykorzystane narzędzie Pyright służące do przeprowadzania statycznej analizy typów.
 
-\subsubsection{Struktura kodu}
-System posiada główny plik „main.py”, w~którym następuje inicjalizacja obiektów klas zarządcy oraz orkiestratora, oraz zarejestrowanie w~tych obiektach wołań zwrotnych do siebie, odpowiedzialnych za przepływ danych między modułami systemu.
+\subsection{Struktura kodu}
+System posiada główny plik „main.py” umieszczony w~katalogu nadrzędnym repozytorium, w~którym następuje inicjalizacja obiektów klas zarządcy i~orkiestratora kontenerów, oraz zarejestrowanie w~tych obiektach wołań zwrotnych do siebie, odpowiedzialnych za przepływ danych między modułami systemu. Podsystemy zarządcy oraz orkiestratora wraz ze wszystkimi powiązanymi z~nimi komponentami zostały umieszczone w osobnych katalogach o nazwach „manager" dla katalogu zarządcy oraz „scheduler” dla katalogu orkiestratora.
+\dirtree{%
+.1 STOS.
+.2 main.py.
+.2 manager.
+.3 manager.py.
+.3 \_\_init\_\_.py.
+.3 api\_diver.py.
+.3 cache\_driver.py.
+.3 storage\_driver.py.
+.3 types.py.
+.2 scheduler.
+.3 scheduler.py.
+.3 \_\_init\_\_.py.
+}
+Sposób funkcjonowania systemu, zawartość plików oraz szczegóły implementacyjne zostaną przedstawione w~kolejnych podrozdziałach poświęconych poszczególnym elementom systemu. 

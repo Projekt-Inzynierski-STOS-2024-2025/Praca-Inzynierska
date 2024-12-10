@@ -2,7 +2,11 @@
 Orkiestrator kontenerów to element systemu pośredniczący między kontenerami przeprowadzającymi kompilację i~sprawdzanie kodu, a~zarządcą. Zarządca przekazuje mu obiekty przechowujące informacje o~zadaniach otrzymanych z zewnętrznego systemu STOS, które są zapisywane do kolejki. W~drugiej kolejce przechowywane są obiekty powiązane z kontenerami gotowymi do sprawdzenia zadania. W~sytuacji, gdy zarówno kolejka zadań jak i~kolejka kontenerów nie są puste, pobierane są z nich elementy, a~zadanie zostaje zlecone do sprawdzenia przez kontener. Gdy kontener kończy pracę, pobierane są wyniki sprawdzonego zadania, następnie są one przekazywane do zarządcy, a~obiekt reprezentujący kontener trafia z powrotem do kolejki kontenerów.
 
 \subsection{Cele}
+<<<<<<< HEAD
 Celem implementacji orkiestratora było umożliwienie zrównoleglenia najbardziej czasochłonnego procesu sprawdzania zadań, czyli kompilacji i~egzekucji ich. Umożliwia to skalowanie horyzontalne tej części systemu, co pozwoli na uruchomienie większej ilości modułów sprawdzających podczas dużego obciążenia systemu. Dodatkowym atutem modułu jest również zmiana skryptów inicjujących działanie kontenerów napisanych w~języku Bash na kod napisany w~języku Python, co poprawia czytelność, ułatwia znajdowanie błędów, śledzenie przebiegu programu i~przyszły rozwój systemu.
+=======
+Celem implementacji orkiestratora było umożliwienie zrównoleglenia najbardziej czasochłonnego procesu sprawdzania zadań, czyli kompilacji i wykonania ich. Umożliwia to skalowanie horyzontalne tej części systemu, co pozwoli na uruchomienie większej ilości modułów sprawdzających podczas dużego obciążenia systemu. Dodatkowym atutem modułu jest również zmiana skryptów inicjiujących działanie kontenerów napisanych w języku Bash na kod napisany w języku Python, co poprawia czytelność, ułatwia znajdowanie błędów, śledzenie przebiegu programu i przyszły rozwój systemu.
+>>>>>>> main
 
 
 \subsection{Implementacja}
@@ -63,7 +67,11 @@ oraz dodanie powiązanych z nimi obiektów do kolejki reprezentującej kontenery
 Komunikacja z komponentem zarządcy odbywa się za pomocą wołań zwrotnych. Gdy zarządca otrzyma nowe zadanie, wywołuje metodę \textit{register\_new\_task} orkiestratora kontenerów, przekazując jej obiekt „TaskData” reprezentujący zadanie przesłane do sprawdzenia. Implementacja tej metody dodaje do kolejki obiekt przekazany w~argumencie. Komunikacja w~drugą stronę również odbywa się poprzez wołania zwrotne. Orkiestrator kontenerów udostępnia w~interfejsie metodę \textit{register\_task\_completion\_callback}, której argumentem jest funkcja przyjmująca obiekt sprawdzonego zadania oraz ścieżkę na dysku do plików rezultatu, której implementacja zapisuje w~liście przekazaną funkcję. Wszystkie funkcje z listy są wywoływane po sprawdzeniu zadania. Podejście to niesie za sobą korzyść zmniejszenia powiązania komponentów systemu. Umożliwia również, aby na zdarzenie sprawdzenia zadania nasłuchiwało wiele komponentów, mogą to być na przykład systemy logów, systemy tworzenia kopii zapasowych lub kilka instancji zarządców. Sprawia to, że system jest bardziej otwarty na rozbudowę o~nowe komponenty i~skalowanie.
 
 \subsubsection{Przepływ zdarzeń orkiestratora kontenerów}
+<<<<<<< HEAD
 Orkiestrator kontenerów pozbawiony jest nieskończonej pętli aktywnie monitorującej stan i~wykonującj instrukcję. Zamiast tego jest sterowany zdarzeniami (rynsunek \ref{fig:scheduler-activity-diagram}), główna funkcja - \textit{manage\_workers}, odpowiadająca za logikę biznesową wywoływana jest wtedy, gdy zmienia się stan kolejek zadań i~kontenerów. Implementacja metody sprawdza, czy w~zarówno w~kolejce zadań i~kolejce kontenerów znajdują się elementy, jeśli tak, pobiera po jednym elemencie i~rozpoczyna przetwarzanie zadania.
+=======
+Orkiestrator kontenerów pozbawiony jest nieskończonej pętli aktywnie monitorującej stan i wykonującj instrukcje. Zamiast tego jest sterowany zdarzeniami (rynsunek \ref{fig:scheduler-activity-diagram}), główna funkcja - \textit{manage\_workers}, odpowiadająca za logikę biznesową wywoływana jest wtedy, gdy zmienia się stan kolejek zadań i kontenerów. Implementacja metody sprawdza, czy w zarówno w kolejce zadań i kolejce kontenerów znajdują się elementy, jeśli tak, pobiera po jednym elemencie i rozpoczyna przetwarzanie zadania.
+>>>>>>> main
 
 \begin{figure}[!ht]
 	\begin{center}

@@ -100,7 +100,7 @@ Interfejs sterownika API zawiera sygnatury metod służących do odpytywania ka�
     def fetch_filesdb_zip() -> None:
         pass
 \end{lstlisting}
-Rządania są wykonywane przy użyciu biblioteki requests\cite{pythonRequests}, która w znacznym stopniu upraszcza wysyłanie rządań http w programach napisanych w języku Python.
+Żądania są wykonywane przy użyciu biblioteki requests\cite{pythonRequests}, która w znacznym stopniu upraszcza wysyłanie żądań HTTP w programach napisanych w języku Python.
 
 \subsection{Sterownik systemu plików}
 Interfejs sterownika systemu plików udostępnia dwie metody. Metoda \textit{save\_file} przyjmuje w argumentach nazwę, rozszerzenie oraz zawartość pliku i zapisuje go na dysku i zwraca ścieżkę do zapisanego pliku. Pliki zadań są potrzebne w systemie tylko na czas kompilacji i oceny, dlatego są zapisywane w folderze \textit{/tmp} przeznaczonym do przechowywania plików tymczasowych. Drugą metoda \textit{get\_file} służy do uzyskania zawartości pliku znajdującego się pod ścieżką podaną w argumencie metody.
@@ -123,7 +123,7 @@ Interfejs sterownika systemu plików udostępnia dwie metody. Metoda \textit{sav
 \end{lstlisting}
 
 \subsection{Sterownik cache}
-Sterownik cache to element systemu mający zepewnić redukcję ilości wysyłanych rządań do systemu STOS, poprzez przechowywanie plików wchodzących w skład zadania, dzięki czemu po uzyskaniu listy plików zadań, pobierane są tylko te, które nie znajdują się obecnie w cache. Sam cache został zaimplementowany przy wykorzystaniu bazy danych SQLite\cite{sqlite}, czyli bazy danych przeprowadzającej operacje zapisu i odczytu bezpośrednio na pliku na dysku, bez wykorzystywania dodatkowych procesów serwera bazy danych. Rozwiązanie to zostało wybrane ze względu na jego prostotę oraz fakt, że jest to baza danych wykorzystywana w innych miejscach systemu. Interfejs sterownika cache udostępnia metody do dodawania, usuwania i pobierania plików oraz metodę \textit{check\_files}, która w argumencie przyjmuję listę nazw plików. Metoda ta sprawdza, czy w cache znajdują się pliki, których nazwy znajdują się na liście i zwraca listę z nawami tych, których brakuje.
+Sterownik cache to element systemu mający zepewnić redukcję ilości wysyłanych żądań do systemu STOS, poprzez przechowywanie plików wchodzących w skład zadania, dzięki czemu po uzyskaniu listy plików zadań, pobierane są tylko te, które nie znajdują się obecnie w cache. Sam cache został zaimplementowany przy wykorzystaniu bazy danych SQLite\cite{sqlite}, czyli bazy danych przeprowadzającej operacje zapisu i odczytu bezpośrednio na pliku na dysku, bez wykorzystywania dodatkowych procesów serwera bazy danych. Rozwiązanie to zostało wybrane ze względu na jego prostotę oraz fakt, że jest to baza danych wykorzystywana w innych miejscach systemu. Interfejs sterownika cache udostępnia metody do dodawania, usuwania i pobierania plików oraz metodę \textit{check\_files}, która w argumencie przyjmuję listę nazw plików. Metoda ta sprawdza, czy w cache znajdują się pliki, których nazwy znajdują się na liście i zwraca listę z nawami tych, których brakuje.
 \lstset{style=python}
 \begin{lstlisting}[caption = {Interfejs sterownika systemu plików.}]
     class ICacheDriver(ABC):

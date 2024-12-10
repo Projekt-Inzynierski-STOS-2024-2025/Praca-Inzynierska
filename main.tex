@@ -1,9 +1,10 @@
 % LTex: language=pl
 \documentclass{szablonPG}
-\usepackage[style=numeric, language=polish, backend=bibtex]{biblatex}
+\usepackage[style=numeric, language=polish, backend=bibtex, sorting=none]{biblatex}
 \usepackage{dirtree}
 \usepackage{listing_schemat}
 \DeclareDelimFormat{finalnamedelim}{\addspace i\space}
+
 % Żródła bibliografii
 \addbibresource{bibliography/intro.bib}
 \addbibresource{bibliography/elastic.bib}
@@ -19,13 +20,22 @@
 \addbibresource{bibliography/wine.bib}
 \addbibresource{bibliography/nix.bib}
 \addbibresource{bibliography/misc.bib}
+
 % Koniec zrodel
 \begin{document}
 \includepdf{meta/StronaTytulowa.pdf}
+
+% druga strona musi być pusta i nienumerowana
+\newpage
+\thispagestyle{empty}
+\mbox{}
+\newpage
+
 % Rzeczy typu nagłówek, etc.
 \input{meta/streszczenie.tex}
 \input{meta/abstract.tex}
 \tableofcontents
+
 % Rozdziały
 \input{chapters/1-wstep.tex}
 \input{chapters/2-system.tex}
@@ -33,7 +43,19 @@
 \input{chapters/4-wdrozenie.tex}
 \input{chapters/5-rozwoj.tex}
 \input{chapters/6-podsumowanie.tex}
-\input{chapters/7-autorstwo.tex}
+
 % Bibliografia
 \printbibliography
+
+% Autorstwo
+\newpage
+\thispagestyle{empty}
+\noindent Zakres odpowiedzialności członków zespołu:
+\newline Tymoteusz Paliński:
+\newline Wdrożenie rozwiązania na serwer, przygotowanie maszyn wirtualnych, opracowanie architektury rozwiązania
+\newline Adam Niesiobędzki: 
+\newline Implementacja rozwiązania, integracja komponentów, opracowanie architektury rozwiązania
+\newline Łukasz Nowakowski:
+\newline Analiza systemu, opracowanie architektury rozwiązania, implementacja symulatorów serwisów STOS oraz Evaluator, przygotowanie instrukcji do serwisu Elasticstack, implementacja komponentu logowania zdarzeń.
+\newpage
 \end{document}

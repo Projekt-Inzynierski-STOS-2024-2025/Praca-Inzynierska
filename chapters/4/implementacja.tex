@@ -13,7 +13,7 @@ W celu uproszczenia i~automatyzacji procesu wdrożenia i~dostarczania aktualizac
 Przygotowanie środowiska odbywa się w~dwóch etapach -- weryfikacji obecności programów wykonywalnych i~resecie środowiska zmodyfikowanego przez istniejący system STOS do stanu wyjściowego. 
 \newline \noindent Programy wykonywalne wymagane do poprawnego działania aplikacji to wcześniej wspomniany menadżer pakietów nix i~silnik konteneryzacji docker. Skrypt sprawdza, czy uruchomienie tych programów zwraca kod wyjścia programu różny od kodu 0 -- w~takim przypadku, skrypt informuje użytkownika o~błędzie i~jego dalsze wykonywanie jest przerywane, ponieważ wywołanie skryptu bez obecności wymaganych aplikacji mogłoby prowadzić do niezdefiniowanego zachowania. W~ramach tej procedury sprawdzana jest również konfiguracja połączenia maszyny z siecią i~serwerem DNS za pomocą polecenia ping.
 \lstset{style=shell}
-\begin{lstlisting}[caption = {Przykład weryfikacji obecności instalacji programu "docker" w~systemie.}]
+\begin{lstlisting}[caption = {Przykład weryfikacji obecności instalacji programu „docker” w~systemie.}]
 #!/bin/bash
 echo ------ Checking for docker installation 
 if ! command -v docker &> /dev/null; then

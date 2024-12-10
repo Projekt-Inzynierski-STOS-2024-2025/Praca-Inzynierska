@@ -1,8 +1,8 @@
 \section{Opis implementacji}
-Zaimplementowany system został podzielony na dwa podsystemy, jeden z nich - zarządca, komunikuje się z API istniejącego systemu STOS, a~drugi - orkiestrator kontenerów, odpowiada za zlecanie pracy i odbieranie plików wynikowych z modułu kompilującego, czyli kontenerów odpowiedzialnych za kompilację i uruchamianie rozwiązań.
+Zaimplementowany system został podzielony na dwa podsystemy, jeden z nich -- zarządca, komunikuje się z API istniejącego systemu STOS, a~drugi -- orkiestrator kontenerów, odpowiada za zlecanie pracy i odbieranie plików wynikowych z modułu kompilującego, czyli kontenerów odpowiedzialnych za kompilację i uruchamianie rozwiązań.
 
 \subsection{Założenia stylistyczne implementowangeo kodu}
 System został zaimplementowany w~języku Python. W~celu poprawy jakości, utrzymywalności, spójności i czytelności kodu oraz ułatwienia wykrywania błędów wszystkie metody oraz zmienne zostały oznaczone typami, a~klasy zostały utworzone na podstawie interfejsów zdefiniowanych przy użyciu modułu Abstract Base Classes(abc) \cite{pythonAbc}, pozwalającego na definiowanie klas abstrakcyjnych. Podczas implementacji zostało wykorzystane narzędzie Pyright służące do przeprowadzania statycznej analizy typów.
 
 \subsubsection{Struktura kodu}
-System posiada główny plik main.py, w~którym następuje inicjalizacja obiektów klas zarządcy oraz orkiestratora, oraz zarejestrowanie w~tych obiektach wołań zwrotnych do siebie, odpowiedzialnych za przepływ danych między modułami systemu.
+System posiada główny plik „main.py”, w~którym następuje inicjalizacja obiektów klas zarządcy oraz orkiestratora, oraz zarejestrowanie w~tych obiektach wołań zwrotnych do siebie, odpowiedzialnych za przepływ danych między modułami systemu.

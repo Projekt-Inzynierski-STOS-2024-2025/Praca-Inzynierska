@@ -4,8 +4,8 @@
 \section{Komponenty i~schemat działania}
 System możemy podzielić na komponenty ze względu na realizowane zadania:
 \begin{itemize}
-    \item STOS-ui -- serwis w~postaci strony internetowej, umożliwiający wgranie rozwiązań przez studentów i~umieszczenie ich w~kolejce dostępnej do pobrania przez inne serwisy poprzez żądania HTTP. Oprócz kolejki posiada również bazę danych z ocenami prac studentów. Serwis posiada warstwę prezentacji, która generuje przyjazne dla użytkownika widoki.
-    \item Moduł sprawdzający -- część serwisu działającego po stronie serwera. Jego zadaniem, jest wywoływanie zapytań do API udostępnianego przez serwis STOS-ui metodą odpytywania, w~celu pobierania kodu programów do wykonania, zlecenie kompilacji, ocenę kodu oraz przesłanie wyniku do STOS-u.
+    \item STOS-WEB -- serwis w~postaci strony internetowej, umożliwiający wgranie rozwiązań przez studentów i~umieszczenie ich w~kolejce dostępnej do pobrania przez inne serwisy poprzez żądania HTTP. Oprócz kolejki posiada również bazę danych z ocenami prac studentów. Serwis posiada warstwę prezentacji, która generuje przyjazne dla użytkownika widoki.
+    \item Moduł sprawdzający -- część serwisu działającego po stronie serwera. Jego zadaniem, jest wywoływanie zapytań do API udostępnianego przez serwis STOS-WEB metodą odpytywania, w~celu pobierania kodu programów do wykonania, zlecenie kompilacji, ocenę kodu oraz przesłanie wyniku do STOS-WEB.
     \item Moduł kompilujący -- skonteneryzowany serwis działający na serwerze, kompilujący otrzymany kod. Ma możliwość kompilacji lub interpretacji wielu języków programowania. Aktywnie nasłuchuje komunikatów przesyłanych przez nazwany potok. Jest przystosowany do ciągłego działania, co wymaga uruchomienia go wyłącznie przy starcie całej platformy. Posiada współdzielone katalogi z~gospodarzem, zawierające skrypty kontrolujące, kody źródłowe oraz rezultaty.
 \end{itemize}
 \begin{figure}

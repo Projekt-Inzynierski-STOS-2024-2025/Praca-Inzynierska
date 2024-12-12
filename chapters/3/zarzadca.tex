@@ -22,7 +22,7 @@ Interfejs zarządcy został stworzony przy pomocy modułu Abstract Base Classes\
 Funkcjonalność zarządcy jest realizowana przez klasy sterowników do komunikacji z API, przechowywania plików oraz cache, których metody są wywoływane w głównej pętli komponentu w metodzie \textit{listen} oraz przy wystąpieniu w systemie zdarzenia ukończenia sprawdzania zadania w metodzie \textit{task\_completion\_callback}.
 
 \subsection{Przebieg pracy zarządcy}
-Komponent ten pracuje w nieprzerwanej pętli, która kolejno synchronizuje stan lokalnej bazy zawierającej zadania zdefiniowane przez prowadzących zajęcia z bazą zewnętrzego systemu STOS, sprawdza czy w zewnętrznym systemie znajdują się rozwiązania zadań oczekujące na sprawdzenie, pozyskuje ich pliki i informuje nasłuchujące komponenty o pojawieniu się nowego zadania oczekującego na sprawdzenie. Po wykonanej sekwencji wywoływana jest metoda \textit{sleep} pochodząca z modułu standardowej biblioteki Pythona \textit{time}\cite{pythonTime}, która zatrzymuje dalsze wykonanie pętli na czas zdefiniowany w pliku zawierającym zmienne środowiskowe systemu.
+Komponent ten pracuje w nieprzerwanej pętli, która kolejno synchronizuje stan lokalnej bazy zawierającej zadania zdefiniowane przez prowadzących zajęcia z bazą zewnętrznego systemu STOS-ui, sprawdza czy w zewnętrznym systemie znajdują się rozwiązania zadań oczekujące na sprawdzenie, pozyskuje ich pliki i informuje nasłuchujące komponenty o pojawieniu się nowego zadania oczekującego na sprawdzenie. Po wykonanej sekwencji wywoływana jest metoda \textit{sleep} pochodząca z modułu standardowej biblioteki Pythona \textit{time}\cite{pythonTime}, która zatrzymuje dalsze wykonanie pętli na czas zdefiniowany w pliku zawierającym zmienne środowiskowe systemu.
 \lstset{style=python}
 \begin{lstlisting}[caption = {Implementacja metody listen.}]
     @override
@@ -34,7 +34,7 @@ Komponent ten pracuje w nieprzerwanej pętli, która kolejno synchronizuje stan 
             self._notify_new_task(task_data)
             sleep(self.__request_timeout)
 \end{lstlisting}
-Poza wykonywaniem głównej pętli, zarządca nasłuchuje na zdarzenie ukończenia sprawdzania zadania. Przy wystąpieniu tego zdarzenia odsyła otrzymany rezultat zadania do zewnętrznego systemu STOS oraz usuwa z systemu pliki powstałe w procesie kompilacji i oceny zadania.
+Poza wykonywaniem głównej pętli, zarządca nasłuchuje na zdarzenie ukończenia sprawdzania zadania. Przy wystąpieniu tego zdarzenia odsyła otrzymany rezultat zadania do zewnętrznego systemu STOS-ui oraz usuwa z systemu pliki powstałe w procesie kompilacji i oceny zadania.
 \lstset{style=python}
 \begin{lstlisting}[caption = {Implementacja metody wywoływanej przy zdarzeniu ukończenia sprawdzania zadania.}]
     @override
@@ -57,7 +57,7 @@ Poza wykonywaniem głównej pętli, zarządca nasłuchuje na zdarzenie ukończen
 \end{figure}
 
 \subsection{Sterownik API}
-Klasa sterownika API odpowiada za komunikację z zewnętrznym systemem STOS poprzez żądania HTTP do udostępnianego przez niego API, obejmującego takie punkty końcowe jak:
+Klasa sterownika API odpowiada za komunikację z zewnętrznym systemem STOS-ui poprzez żądania HTTP do udostępnianego przez niego API, obejmującego takie punkty końcowe jak:
 \begin{itemize}
     \item \textit{GET /sync} - pobranie wartości skrótu bazy danych
     \item \textit{GET /sync\_problem} - pobranie pliku bazy danych
@@ -65,7 +65,7 @@ Klasa sterownika API odpowiada za komunikację z zewnętrznym systemem STOS popr
     \item \textit{GET /files/<file\_id>} - pobranie pliku źródłowego zadania o danym id
     \item \textit{POST /tasks/<task\_id>} - przesłanie rozwiązania zadania o danym id
 \end{itemize}
-Interfejs sterownika API zawiera sygnatury metod służących do odpytywania każdego z punktów końcowych udostępnianych przez system STOS.
+Interfejs sterownika API zawiera sygnatury metod służących do odpytywania każdego z punktów końcowych udostępnianych przez STOS-ui.
 \lstset{style=python}
 \begin{lstlisting}[caption = {Interfejs sterownika API.}]
     class IApiDriver(ABC):
@@ -123,7 +123,7 @@ Interfejs sterownika systemu plików udostępnia dwie metody. Metoda \textit{sav
 \end{lstlisting}
 
 \subsection{Sterownik cache}
-Sterownik cache to element systemu mający zepewnić redukcję ilości wysyłanych żądań do systemu STOS, poprzez przechowywanie plików wchodzących w skład zadania, dzięki czemu po uzyskaniu listy plików zadań, pobierane są tylko te, które nie znajdują się obecnie w cache. Sam cache został zaimplementowany przy wykorzystaniu bazy danych SQLite\cite{sqlite}, czyli bazy danych przeprowadzającej operacje zapisu i odczytu bezpośrednio na pliku na dysku, bez wykorzystywania dodatkowych procesów serwera bazy danych. Rozwiązanie to zostało wybrane ze względu na jego prostotę oraz fakt, że jest to baza danych wykorzystywana w innych miejscach systemu. Interfejs sterownika cache udostępnia metody do dodawania, usuwania i pobierania plików oraz metodę \textit{check\_files}, która w argumencie przyjmuję listę nazw plików. Metoda ta sprawdza, czy w cache znajdują się pliki, których nazwy znajdują się na liście i zwraca listę z nawami tych, których brakuje.
+Sterownik cache to element systemu mający zepewnić redukcję ilości wysyłanych żądań do systemu STOS-ui, poprzez przechowywanie plików wchodzących w skład zadania, dzięki czemu po uzyskaniu listy plików zadań, pobierane są tylko te, które nie znajdują się obecnie w cache. Sam cache został zaimplementowany przy wykorzystaniu bazy danych SQLite\cite{sqlite}, czyli bazy danych przeprowadzającej operacje zapisu i odczytu bezpośrednio na pliku na dysku, bez wykorzystywania dodatkowych procesów serwera bazy danych. Rozwiązanie to zostało wybrane ze względu na jego prostotę oraz fakt, że jest to baza danych wykorzystywana w innych miejscach systemu. Interfejs sterownika cache udostępnia metody do dodawania, usuwania i pobierania plików oraz metodę \textit{check\_files}, która w argumencie przyjmuję listę nazw plików. Metoda ta sprawdza, czy w cache znajdują się pliki, których nazwy znajdują się na liście i zwraca listę z nawami tych, których brakuje.
 \lstset{style=python}
 \begin{lstlisting}[caption = {Interfejs sterownika systemu plików.}]
     class ICacheDriver(ABC):

@@ -1,5 +1,5 @@
-\section{Opis implementacji}
-Zaimplementowany system został podzielony na dwa podsystemy, jeden z nich -- zarządca, komunikuje się z API istniejącego systemu STOS, a~drugi -- orkiestrator kontenerów, odpowiada za zlecanie pracy i odbieranie plików wynikowych z modułu kompilującego, czyli kontenerów odpowiedzialnych za kompilację i uruchamianie rozwiązań.
+\section{Opis implementacji systemu STOS-new}
+Zaimplementowany system STOS-new został podzielony na dwa podsystemy, jeden z nich -- zarządca, komunikuje się z API istniejącego systemu STOS-ui, a~drugi -- orkiestrator kontenerów, odpowiada za zlecanie pracy i odbieranie plików wynikowych z modułu kompilującego, czyli kontenerów odpowiedzialnych za kompilację i uruchamianie rozwiązań. Utworzony przez nas system STOS-new, ma za zadanie realizować funkcjonalności modułu sprawdzającego i kompilującego.
 
 \subsection{Założenia stylistyczne implementowanego kodu}
 System został zaimplementowany w~języku Python. W~celu poprawy jakości, utrzymywalności, spójności i czytelności kodu oraz ułatwienia wykrywania błędów wszystkie metody oraz zmienne zostały oznaczone typami, a~klasy zostały utworzone na podstawie interfejsów zdefiniowanych przy użyciu modułu Abstract Base Classes (abc)\cite{pythonAbc}, pozwalającego na definiowanie klas abstrakcyjnych. Podczas implementacji zostało wykorzystane narzędzie Pyright służące do przeprowadzania statycznej analizy typów.

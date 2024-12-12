@@ -1,16 +1,16 @@
 % LTex: language=pl
 
 \section{Automatyzacja wdrożenia}
-W celu uproszczenia i~automatyzacji procesu wdrożenia i~dostarczania aktualizacji systemu STOS, zaimplementowany został skrypt odpowiedzialny za monitorowanie stanu środowiska, przeprowadzanie testów aplikacji i~uruchamianie serwisu. W~ramach tego programu uwzględniono:
+W celu uproszczenia i~automatyzacji procesu wdrożenia i~dostarczania aktualizacji systemu STOS-new, zaimplementowany został skrypt odpowiedzialny za monitorowanie stanu środowiska, przeprowadzanie testów aplikacji i~uruchamianie serwisu. W~ramach tego programu uwzględniono:
 \begin{itemize}
 	\item sprawdzanie obecności wymaganych zależności w~postaci pakietów i~aplikacji,
 	\item przeprowadzanie testów aplikacji w~środowisku testowym,
-	\item kontrolowane zamknięcie aktualnie działającej aplikacji STOS,
-	\item dynamiczne generowanie skryptu zawierającego wszystkie usługi składające się na STOS,
-	\item uruchomienie aplikacji STOS w~ramach systemd.
+	\item kontrolowane zamknięcie aktualnie działającej aplikacji STOS-new,
+	\item dynamiczne generowanie skryptu zawierającego wszystkie usługi składające się na STOS-new,
+	\item uruchomienie aplikacji STOS-new w~ramach systemd.
 \end{itemize}
 \subsection{Przygotowanie środowiska}
-Przygotowanie środowiska odbywa się w~dwóch etapach -- weryfikacji obecności programów wykonywalnych i~resecie środowiska zmodyfikowanego przez istniejący system STOS do stanu wyjściowego. 
+Przygotowanie środowiska odbywa się w~dwóch etapach -- weryfikacji obecności programów wykonywalnych i~resecie środowiska zmodyfikowanego przez istniejący system STOS-new do stanu wyjściowego. 
 \newline \noindent Programy wykonywalne wymagane do poprawnego działania aplikacji to wcześniej wspomniany menadżer pakietów nix i~silnik konteneryzacji Docker. Skrypt sprawdza, czy uruchomienie tych programów zwraca kod wyjścia programu różny od kodu „0” -- w~takim przypadku, skrypt informuje użytkownika o~błędzie i~jego dalsze wykonywanie jest przerywane, ponieważ wywołanie skryptu bez obecności wymaganych aplikacji mogłoby prowadzić do niezdefiniowanego zachowania. W~ramach tej procedury sprawdzana jest również konfiguracja połączenia maszyny z siecią i~serwerem DNS za pomocą polecenia ping.
 \lstset{style=shell}
 \begin{lstlisting}[caption = {Przykład weryfikacji obecności instalacji programu „docker” w~systemie.}]
@@ -22,7 +22,7 @@ if ! command -v docker &> /dev/null; then
 fi
 echo ------ Healthcheck was successful 
 \end{lstlisting}
-\noindent Kolejną częścią procesu przygotowania środowiska są operacje związane z dostosowywaniem środowiska do uruchomienia nowej wersji aplikacji STOS. Pierwszym krokiem jest aktualizacja repozytorium pakietów nixpkgs. Następnie usuwane są katalog \textit{/tmp/env-vars}, który jest artefaktem uruchomienia programu nix-shell i~zatrzymywane są wszystkie kontenery Docker składające się na moduły kompilujące aplikacji. Ostatnim krokiem jest zatrzymanie działającego serwisu STOS korzystając z narzędzia \textit{systemctl}.
+\noindent Kolejną częścią procesu przygotowania środowiska są operacje związane z dostosowywaniem środowiska do uruchomienia nowej wersji aplikacji STOS-new. Pierwszym krokiem jest aktualizacja repozytorium pakietów nixpkgs. Następnie usuwane są katalog \textit{/tmp/env-vars}, który jest artefaktem uruchomienia programu nix-shell i~zatrzymywane są wszystkie kontenery Docker składające się na moduły kompilujące aplikacji. Ostatnim krokiem jest zatrzymanie działającego serwisu STOS-new korzystając z narzędzia \textit{systemctl}.
 \subsection{Testy jednostkowe}
 Następnym zadaniem realizowanym przez skrypt jest przeprowadzanie zautomatyzowanych testów jednostkowych i~integracyjnych aplikacji. Wykorzystywany jest w~tym celu pakiet \textit{pytest} w~połączeniu z dedykowanym środowiskiem testowym zdefiniowanym w~konfiguracji środowiska nix \textit{(plik shell.testing.nix)}. Posiada ono biblioteki niezbędne do wykonania testów, które nie są obecne w~środowisku produkcyjnym. W~przypadku zakończenia niepowodzeniem któregokolwiek ze zdefiniowanych testów skrypt przerywa dalsze wykonanie, informując użytkownika o~błędach w~testach.
 \lstset{style=shell}
@@ -37,7 +37,7 @@ fi
 echo --- Checks successful, preparing for deployment
 \end{lstlisting}
 \subsection{Generowanie skryptu}
-Główną funkcjonalnością automatycznego wdrożenia jest dynamiczne generowanie skryptu wywołującego wszystkie komponenty składające się na aplikację STOS. Są to:
+Główną funkcjonalnością automatycznego wdrożenia jest dynamiczne generowanie skryptu wywołującego wszystkie komponenty składające się na aplikację STOS-new. Są to:
 \begin{itemize}
 	\item aplikacja napisana w~języku python, wywoływana poprzez uruchomienie pliku \textit{main.py},
 	\item program filebeat, odpowiedzialny za przesyłanie logów do maszyny wirtualnej zajmującej się ich gromadzeniem.
@@ -59,8 +59,8 @@ wait
 EOF
 sudo chmod +x /usr/bin/stos-bootstrap
 \end{lstlisting}
-Skrypt ten zapisywany jest w~katalogu \textit{/usr/bin} jako \textit{stos-bootstrap}. Do takiego właśnie programu odwołuje się plik \textit{stos.service}, który stanowi definicję aplikacji STOS w~kontekście systemd, jako programu stanowiącego punkt wejściowy \textit{(entrypoint)} aplikacji.
-\begin{lstlisting}[caption = {Definicja aplikacji STOS jako serwisu w~kontekście systemd}]
+Skrypt ten zapisywany jest w~katalogu \textit{/usr/bin} jako \textit{stos-bootstrap}. Do takiego właśnie programu odwołuje się plik \textit{stos.service}, który stanowi definicję aplikacji STOS-new w~kontekście systemd, jako programu stanowiącego punkt wejściowy \textit{(entrypoint)} aplikacji.
+\begin{lstlisting}[caption = {Definicja aplikacji STOS-new jako serwisu w~kontekście systemd}]
 [Unit]
 Description=STOS daemon managing code execution container instances
 After=network.target

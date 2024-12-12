@@ -197,4 +197,34 @@ backgroundcolor=\color{WhitePG},   % kolor t³a dla listingu
   title=\lstname                   % tytu³ listingu na podstawie nazwy pliku kodu
 }
 
+
+\lstdefinestyle{asm}{
+  backgroundcolor=\color{WhitePG},   % kolor t³a dla listingu
+  basicstyle=\linespread{1}\footnotesize,  % rozmiar czcionki dla kodu w listingu
+  breakatwhitespace=false,         % ustawienie bia³ej spacji
+  breaklines=true,                 % automatyczne ³amanie linii
+  captionpos=b,                    % opis listingu pod ramk¹
+  commentstyle=\color{GreenPG},    % ustawienia komentarzy, (kolor)
+  deletekeywords={...},            % usuwane s³owa kluczowe z danego jêzyka
+  escapeinside={\%*}{*)},          % znaki pozwalaj¹ce na zamieszczenie kodu LaTeX w kodzie listingu
+  extendedchars=true,              % u¿ywanie znaków non-ASCII
+  firstnumber=1,                   % pocz¹tkowy numer linii
+  frame=single,	                   % styl ramki wokó³ kodu
+  keepspaces=true,                 % zachowywanie sformatowania kodu w listingu
+  keywordstyle=\color{BluePG}\bfseries,      % ustawienia dla wygl¹du s³ów kluczowych w kodzie (kolor)
+  language=[x86masm]Assembler,                 % wybór jêzyka kodu w listingu
+  morekeywords={*,...},            % dodatkowe s³owa kluczowe dla danego jêzyka
+  numbers=left,                    % umiejscowienie numeracji linii kodu (po lewej, prawie)
+  numbersep=5pt,                   % odleg³oœæ numeracji linii od ramki
+  numberstyle=\tiny\color{black},  % ustawienia rozmiaru itp, dla numeracji linii
+  rulecolor=\color{black},         % zmiana koloru ramki przy ³amaniu wiersza
+  showspaces=false,                % 
+  showstringspaces=false,          % 
+  showtabs=false,                  % 
+  stepnumber=1,                    % odstêp pomiêdzy liniami listingu
+  stringstyle=\color{RedPG},       % ustawienie wygl¹du na ³añcuchów znaków
+  tabsize=2,	                   % ustawienie rozmiaru tabulatora
+  title=\lstname                   % tytu³ listingu na podstawie nazwy pliku kodu
+}
+
 \endinput

@@ -70,3 +70,6 @@ Jest to skrypt napisany w~języku PHP, który odpowiada za zapisywanie plików \
 		\label{io-result}
 	\end{center}
 \end{figure}
+
+\section{Analiza działania modułu kompilującego}
+Moduł ten działa jako kontener platformy Docker. Używa \textit{run.sh} jako skryptu wejściowego, którego działanie zostało zaprezentowane na schemacie \ref{run}. Jego działanie jest sterowane poprzez skrypty z~katalogu \textit{/control}, które są współdzielone z~systemem gospodarza. Jego działanie opiera się na generowaniu skryptu \textit{run.bat}, który tworzony jest na podstawie docelowego języka oraz wybranych opcji kompilacji. Skrypt po zbudowaniu jest uruchamiany w~celu kompilacji aplikacji. Skrypt \textit{run.sh} przy uruchomieniu nasłuchuje w~nieskończonej pętli na nazwany potok przekazujący polecenia kompilacji. Po wykonaniu zadań zapisuje rezultat w folderze \textit{/io/result} i~przesyła komunikat zawierający rezultat do wyjściowego nazwanego potoku. Użycie kontenera zostało zaprezentowane na schemacie \ref{start}.

